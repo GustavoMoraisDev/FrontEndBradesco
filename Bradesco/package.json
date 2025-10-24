@@ -1,0 +1,13 @@
+{
+  "name": "bradesco",
+  "version": "1.0.0",
+  "description": "Documento criado para auxiliar no **planejamento e desenvolvimento da interface do Projeto de Antifraude Bancária**, com foco em simulação de **transações via PIX** e **monitoramento antifraude em tempo real**.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "npx tailwindcss -i ./Styles/input.css -o ./Styles/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
