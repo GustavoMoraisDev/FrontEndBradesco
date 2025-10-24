@@ -1,45 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Banco Bradesco | Você Primeiro</title>
-  <link rel="icon" type="image/png" href="/Bradesco/assets/favconBank.png">
-  <link rel="stylesheet" href="/Bradesco/Styles/Home.css">
+  <link rel="icon" type="image/png" href="/Bradesco/assets/favconBank.png" />
+  <link href="/Bradesco/src/output.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
 </head>
-<body>
-  <!-- Header com logo central -->
-  <header class="header">
-    <img src="/Bradesco/assets/logoBank.png" alt="Bradesco" class="logo">
+<body class="w-full h-screen overflow-hidden flex flex-col bg-cover bg-center bg-no-repeat" style="background-image: url('/Bradesco/assets/background-page.png');">
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full flex justify-center py-1 bg-gradient-to-r from-[#b41a83] via-[#cc092f] to-[#f36279] shadow-md z-10">
+    <img src="/Bradesco/assets/logoBank.png" alt="Bradesco" class="h-16 object-contain">
   </header>
 
-  <!-- Hero section -->
-  <main class="hero">
-    <div class="overlay">
-      <div class="hero-content">
+  <!-- Hero -->
+  <main class="flex-1 flex justify-center items-center">
+    <div class="bg-black/45 w-full h-full flex justify-center items-center">
+      <div class="flex flex-wrap justify-center items-center gap-12 max-w-6xl w-full px-6 text-white">
+
         <!-- Texto à esquerda -->
-        <div class="hero-text">
-          <h1>Seu dinheiro seguro e sempre ao alcance</h1>
-          <p>Acompanhe seu saldo, movimente sua conta e aproveite todos os serviços Bradesco de forma prática.</p>
+        <div class="flex-1 min-w-[300px]">
+          <h1 class="text-[2.8rem] font-bold mb-4 text-[#ffeded] leading-tight">
+            Seu dinheiro seguro e sempre ao alcance
+          </h1>
+          <p class="text-lg text-[#f2f2f2] leading-relaxed">
+            Acompanhe seu saldo, movimente sua conta e aproveite todos os serviços Bradesco de forma prática.
+          </p>
         </div>
 
-        <!-- Caixa de ação à direita -->
-        <div class="hero-box">
-          <h2>Descubra seu Limite Pré-Aprovado</h2>
-          <input id="doc" type="number" placeholder="Digite seu CPF">
-            <input type="submit" value="Continuar" class="btn-primary">
-          <div class="hero-buttons">
-            <a href="/login.html" class="btn-secondary">Acessar Conta</a>
-            <a href="/Bradesco/Criar-Conta.html" class="btn-secondary">Criar Conta</a>
+        <!-- Caixa à direita -->
+        <div class="flex-1 min-w-[300px] bg-white/95 text-gray-900 p-8 rounded-xl flex flex-col gap-4">
+          <h2 class="text-lg font-semibold mb-2 text-gray-800">Descubra seu Limite Pré-Aprovado</h2>
+          <input
+            id="doc"
+            type="number"
+            placeholder="Digite seu CPF"
+            class="px-4 py-3 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-red-600"
+          />
+          <input
+            type="submit"
+            value="Continuar"
+            class="bg-[#c4001d] hover:bg-[#a00018] text-white font-semibold py-3 rounded-md cursor-pointer transition"
+          />
+
+          <div class="flex gap-4 mt-4">
+            <a href="./Login.html" class="flex-1 text-center py-3 border-2 border-[#c4001d] text-[#c4001d] rounded-md font-semibold hover:bg-[#c4001d] hover:text-white transition">
+              Acessar Conta
+            </a>
+            <a href="/Bradesco/Criar-Conta.html" class="flex-1 text-center py-3 border-2 border-[#c4001d] text-[#c4001d] rounded-md font-semibold hover:bg-[#c4001d] hover:text-white transition">
+              Criar Conta
+            </a>
           </div>
         </div>
+
       </div>
     </div>
   </main>
 
-  <!-- Footer básico -->
-  <footer class="footer">
-    <p>© 2025 Bradesco. Todos os direitos reservados.</p>
+  <!-- Footer -->
+  <footer class="text-center py-4 bg-gradient-to-r from-[#b41a83] via-[#cc092f] to-[#f36279] text-white text-base">
+    © 2025 Bradesco. Todos os direitos reservados.
   </footer>
+
 </body>
 </html>
