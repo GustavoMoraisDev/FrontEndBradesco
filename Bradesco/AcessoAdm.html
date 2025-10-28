@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bradesco | Acesso Administrador</title>
+  <link rel="icon" type="image/png" href="/Bradesco/assets/favconBank.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    .bradesco-red { background-color: #CC092F; }
+    .bradesco-red-text { color: #CC092F; }
+    .bradesco-red-hover:hover { background-color: #A30825; }
+    body { background-color: #f5e4e7; }
+  </style>
+</head>
+
+<body class="font-[Inter] text-gray-900 min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 w-full bg-gradient-to-r from-[#b41a83] via-[#cc092f] to-[#f36279] shadow-sm z-30">
+    <div class="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
+      <img src="/Bradesco/assets/logoBank.png" alt="Bradesco" class="h-10 object-contain" />
+      <div class="flex items-center space-x-4">
+        <a href="#" class="flex items-center text-sm text-white">
+          Olá, <span id="bemVindo" class="font-semibold ml-1">Carregando...</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-6 pt-20">
+
+    <!-- MENU LATERAL -->
+    <aside class="lg:col-span-2 lg:block hidden mt-6">
+      <nav class="sticky top-20 space-y-2">
+        <a href="#" class="flex items-center p-3 font-bold text-lg bradesco-red-text rounded-lg bg-red-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 001 1h3m-5-10v8a1 1 0 01-1 1h-6a1 1 0 01-1-1v-8" />
+          </svg>
+          Início
+        </a>
+        <a href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Dashboard</a>
+        <a href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Antifraude</a>
+        <a href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Administradores</a>
+        <div class="py-2 border-t border-gray-200 mt-2"></div>
+        <a href="/Bradesco/Home.html" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Sair</a>
+      </nav>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <section class="lg:col-span-10 mt-6">
+
+      <div class="bg-white shadow-xl rounded-xl p-6 mb-6">
+        <h2 class="text-xl font-bold mb-1">Administrador</h2>
+        <p class="text-gray-500 text-sm">Visão Geral de Contas</p>
+
+        <div class="mt-6 flex space-x-4">
+          <div id="contasAtivas" class="flex-1 bradesco-red text-white py-3 px-3 rounded-lg bradesco-red-hover transition shadow-md cursor-pointer text-center">
+            Contas Ativas
+          </div>
+          <div id="contasPendentes" class="flex-1 bradesco-red text-white py-3 px-3 rounded-lg bradesco-red-hover transition shadow-md cursor-pointer text-center">
+            Contas em Análise
+          </div>
+          <div id="contasBloqueadas" class="flex-1 bradesco-red text-white py-3 px-3 rounded-lg bradesco-red-hover transition shadow-md cursor-pointer text-center">
+            Contas Bloqueadas
+          </div>
+        </div>
+      </div>
+
+      <!-- ÁREA DINÂMICA DE CONTAS -->
+      <div class="mb-5 bg-white shadow-xl rounded-xl p-10">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Contas em Análise</h3>
+
+        <div id="listaContasPendentes" class="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-6">
+          <!-- Inserindo os cards aqui -->
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+
+  <!-- Adicionando o Status da Análise aqui -->
+  <div id="toastContainer" class="flex flex-col items-center gap-2 mb-6 "></div>
+
+  <footer class="w-full bg-gradient-to-r from-[#b41a83] via-[#cc092f] to-[#f36279] text-white text-center py-4">
+    © 2025 Bradesco. Todos os direitos reservados.
+  </footer>
+
+
+  <script src="/Bradesco/Js/acessoAdm.js"></script>
+</body>
+</html>
