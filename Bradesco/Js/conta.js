@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Elementos do DOM
   const bemVindo = document.getElementById("bemVindo");
   const saldoEl = document.getElementById("saldo");
   const nomeCliente = document.getElementById("nomeCliente");

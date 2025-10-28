@@ -8,15 +8,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
     <style>
-        /* Cores do Bradesco (Vermelho) */
+        /* Cores */
         .bradesco-red { background-color: #CC092F; }
         .bradesco-red-text { color: #CC092F; }
         .bradesco-red-hover:hover { background-color: #A30825; }
-        /* Garantindo o ajuste do body */
+        
         body { background-color: #f5e4e7; } /* Cor de fundo original */
     </style>
 </head>
-<body class="font-[Inter] text-gray-900">
+<body class="font-[Inter] text-gray-900 min-h-screen flex flex-col">
 
     <header class="fixed top-0 w-full bg-gradient-to-r from-[#b41a83] via-[#cc092f] to-[#f36279]  shadow-sm z-30">
         <div class="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
@@ -31,7 +31,7 @@
         </div>
     </header>
 
-    <main class="pt-20 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <main class="flex-1 pt-20 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         <aside class="lg:col-span-2 lg:block hidden mt-6">
             <nav class="sticky top-20 space-y-2">
@@ -129,7 +129,7 @@
 
     </main>
 
-    <footer class="mt-12 w-full bg-gradient-to-r from-[#b41a83] via-[#cc092f] to-[#f36279]  text-white text-center py-4">
+    <footer class="w-full bg-gradient-to-r from-[#b41a83] via-[#cc092f] to-[#f36279] text-white text-center py-4">
         © 2025 Bradesco. Todos os direitos reservados.
     </footer>
 

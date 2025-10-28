@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
       uf: document.querySelector("#estado").value,
       complemento: document.querySelector("#complemento").value,
       password: document.querySelector("#senha").value,
-      status: "1",
     };
 
     try {
