@@ -10,6 +10,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const bemVindo = document.getElementById("bemVindo");
   const lista = document.getElementById("listaContasPendentes");
+  const Aprovados = document.getElementById("contasAtivas");
+  const Reprovados = document.getElementById("contasReprovadas");
+  const Pendentes = document.getElementById("contasPendentes");
+  
 
   
   // BUSCA ADMIN PELO ID 
@@ -24,13 +28,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     bemVindo.textContent = "Erro ao carregar dados da conta.";
   }
 
+  // BUSCA CONTAS APROVADAS
+  try {
+    const status = "2";
+    const response = await fetch(`http://localhost:8080/preRegistration/status?status=${status}`);
+    const data = await response.json();
+
+    if (!response.ok) throw new Error("Erro ao buscar contas pendentes");
+
+    const totalAprovados = data.length;
+    Aprovados.textContent = `Contas Ativas: ${totalAprovados}` ;
+    
+  } catch (error) {
+    console.error("Erro ao carregar contas:", error);
+  }
+
+
+  // BUSCA CONTAS REPROVADAS
+  try {
+    const status = "3";
+    const response = await fetch(`http://localhost:8080/preRegistration/status?status=${status}`);
+    const data = await response.json();
+
+    if (!response.ok) throw new Error("Erro ao buscar contas pendentes");
+
+    const totalReprovados = data.length;
+    Reprovados.textContent = `Contas Reprovadas: ${totalReprovados}` ;
+
+    
+  } catch (error) {
+    console.error("Erro ao carregar contas:", error);
+  }
+
+
+
   
   // BUSCA CONTAS PENDENTES // 
   try {
-    const response = await fetch("http://localhost:8080/preRegistration/pendentes");
+
+    const status = "1";
+    const response = await fetch(`http://localhost:8080/preRegistration/status?status=${status}`);
+    const contas = await response.json();
+
+    
+
+    const totalPendentes = contas.length;
+    Pendentes.textContent = `Contas Pendentes: ${totalPendentes}` ;
+
     if (!response.ok) throw new Error("Erro ao buscar contas pendentes");
 
-    const contas = await response.json();
+    
     lista.innerHTML = ""; // limpa a lista
 
     if (!contas.length) {
