@@ -13,12 +13,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const Aprovados = document.getElementById("contasAtivas");
   const Reprovados = document.getElementById("contasReprovadas");
   const Pendentes = document.getElementById("contasPendentes");
-  
 
-  
-  // BUSCA ADMIN PELO ID 
+
+
+  // BUSCA ADMIN PELO ID
   try {
-    const response = await fetch(`http://localhost:8080/administration/${clienteId}`);
+    const response = await fetch(
+      `http://localhost:8080/administration/${clienteId}`
+    );
     if (!response.ok) throw new Error("Erro ao buscar dados da conta");
 
     const data = await response.json();
@@ -31,53 +33,48 @@ document.addEventListener("DOMContentLoaded", async () => {
   // BUSCA CONTAS APROVADAS
   try {
     const status = "2";
-    const response = await fetch(`http://localhost:8080/preRegistration/status?status=${status}`);
+    const response = await fetch(
+      `http://localhost:8080/preRegistration/status?status=${status}`
+    );
     const data = await response.json();
 
     if (!response.ok) throw new Error("Erro ao buscar contas pendentes");
 
     const totalAprovados = data.length;
-    Aprovados.textContent = `Contas Ativas: ${totalAprovados}` ;
-    
+    Aprovados.textContent = `Contas Ativas: ${totalAprovados}`;
   } catch (error) {
     console.error("Erro ao carregar contas:", error);
   }
 
-
   // BUSCA CONTAS REPROVADAS
   try {
     const status = "3";
-    const response = await fetch(`http://localhost:8080/preRegistration/status?status=${status}`);
+    const response = await fetch(
+      `http://localhost:8080/preRegistration/status?status=${status}`
+    );
     const data = await response.json();
 
     if (!response.ok) throw new Error("Erro ao buscar contas pendentes");
 
     const totalReprovados = data.length;
-    Reprovados.textContent = `Contas Reprovadas: ${totalReprovados}` ;
-
-    
+    Reprovados.textContent = `Contas Reprovadas: ${totalReprovados}`;
   } catch (error) {
     console.error("Erro ao carregar contas:", error);
   }
 
-
-
-  
-  // BUSCA CONTAS PENDENTES // 
+  // BUSCA CONTAS PENDENTES //
   try {
-
     const status = "1";
-    const response = await fetch(`http://localhost:8080/preRegistration/status?status=${status}`);
+    const response = await fetch(
+      `http://localhost:8080/preRegistration/status?status=${status}`
+    );
     const contas = await response.json();
 
-    
-
     const totalPendentes = contas.length;
-    Pendentes.textContent = `Contas Pendentes: ${totalPendentes}` ;
+    Pendentes.textContent = `Contas Pendentes: ${totalPendentes}`;
 
     if (!response.ok) throw new Error("Erro ao buscar contas pendentes");
 
-    
     lista.innerHTML = ""; // limpa a lista
 
     if (!contas.length) {
@@ -92,10 +89,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Monta cada card
     contas.forEach((conta) => {
       const card = document.createElement("div");
-      card.className ="w-full bg-white border-l-4 border-[#cc092f] shadow-md rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer";
+      card.className =
+        "w-full bg-white border-l-4 border-[#cc092f] shadow-md rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer";
       card.id = `conta-${conta.id}`;
 
-card.innerHTML = `
+      card.innerHTML = `
   <!-- Cabeçalho -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
     <div>
@@ -125,7 +123,9 @@ card.innerHTML = `
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm text-gray-700">
       <p><strong>Email:</strong> ${conta.email}</p>
       <p><strong>Telefone:</strong> ${conta.phoneNumber}</p>
-      <p><strong>Data de Cadastro:</strong> ${new Date(conta.createdAt).toLocaleString("pt-BR")}</p>
+      <p><strong>Data de Cadastro:</strong> ${new Date(
+        conta.createdAt
+      ).toLocaleString("pt-BR")}</p>
     </div>
   </div>
 
@@ -158,112 +158,142 @@ card.innerHTML = `
   </div>
 `;
 
-lista.appendChild(card);
+      lista.appendChild(card);
     });
 
     lista.addEventListener("click", async (event) => {
-  const button = event.target.closest("button");
-  if (!button) return;
+      const button = event.target.closest("button");
+      if (!button) return;
 
-  const action = button.dataset.action;
-  const card = button.closest("[id^='conta-']");
-  if (!card) return;
+      const action = button.dataset.action;
+      const card = button.closest("[id^='conta-']");
+      if (!card) return;
 
-  const contaId = card.id.replace("conta-", "");
-  const conta = contas.find(c => c.id == contaId);
-  if (!conta) return console.error("Conta não encontrada:", contaId);
+      const contaId = card.id.replace("conta-", "");
+      const conta = contas.find((c) => c.id == contaId);
+      if (!conta) return console.error("Conta não encontrada:", contaId);
 
-  if (action === "aprovar") {
-    const body = {
-      name: conta.name,
-      cpf: conta.cpf,
-      dataNascimento: conta.dataNascimento,
-      email: conta.email,
-      phoneNumber: conta.phoneNumber,
-      profissao: conta.profissao,
-      rendaMensal: conta.rendaMensal,
-      cep: conta.cep,
-      logradouro: conta.logradouro,
-      numero: conta.numero,
-      bairro: conta.bairro,
-      cidade: conta.cidade,
-      uf: conta.uf,
-      complemento: conta.complemento,
-      password: conta.password
-    };
+      if (action === "aprovar") {
+        const body = {
+          name: conta.name,
+          cpf: conta.cpf,
+          dataNascimento: conta.dataNascimento,
+          email: conta.email,
+          phoneNumber: conta.phoneNumber,
+          profissao: conta.profissao,
+          rendaMensal: conta.rendaMensal,
+          cep: conta.cep,
+          logradouro: conta.logradouro,
+          numero: conta.numero,
+          bairro: conta.bairro,
+          cidade: conta.cidade,
+          uf: conta.uf,
+          complemento: conta.complemento,
+          password: conta.password,
+        };
 
-    
-    const bodyApprovedPreRegistration = {
-        cpf:conta.cpf,
-        status: "2"
-    };
+        const bodyApprovedPreRegistration = {
+          cpf: conta.cpf,
+          status: "2",
+        };
 
+        try {
+          button.disabled = true;
+          button.textContent = "Aprovando...";
 
-    try {
-      button.disabled = true;
-      button.textContent = "Aprovando...";
+          const response = await fetch("http://localhost:8080/accounts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
 
-      const response = await fetch("http://localhost:8080/accounts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
+          let erroMsg;
 
-      if (!response.ok) throw new Error("Erro ao aprovar conta");
+          if (!response.ok) {
+            const contentType = response.headers.get("content-type");
 
-      const updateStatus = await fetch("http://localhost:8080/preRegistration/analysis", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify(bodyApprovedPreRegistration)
-      });
+            if (contentType && contentType.includes("application/json")) {
+              const errorData = await response.json();
+              if (errorData?.errors?.length) {
+                erroMsg = errorData.errors
+                  .map((e) => e.defaultMessage)
+                  .join(" | ");
+              } else if (errorData?.message) {
+                erroMsg = errorData.message;
+              }
+            } else {
+              erroMsg = await response.text();
+            }
 
-      if(!updateStatus.ok) throw new Error("Erro ao mudar Status da Conta");
+            mostrarToast(`Erro ao Aprovar Cadastro: ${erroMsg}`, "erro");
+            throw new Error(erroMsg);
+          }
 
-      card.remove();
-      mostrarToast(`Conta de ${conta.name} aprovada com sucesso!`, "sucesso");
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao aprovar conta.");
-    } finally {
-      button.disabled = false;
-      button.textContent = "Aprovar";
-    }
-  }
+          const updateStatus = await fetch(
+            "http://localhost:8080/preRegistration/analysis",
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(bodyApprovedPreRegistration),
+            }
+          );
 
-  if (action === "reprovar") {
+          if (!updateStatus.ok)
+            throw new Error("Erro ao mudar Status da Conta");
 
-    try {
-      button.disabled = true;
-      button.textContent = "Reprovando...";
+          card.remove();
+          mostrarToast(
+            `Conta de ${conta.name} aprovada com sucesso!`,
+            "sucesso"
+          );
 
-      const bodyDisapprovedPreRegistration = {
-        cpf:conta.cpf,
-        status: "3"
-    };
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          button.disabled = false;
+          button.textContent = "Aprovar";
+        }
+      }
 
-      const updateStatus = await fetch("http://localhost:8080/preRegistration/analysis", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify(bodyDisapprovedPreRegistration)
-      });
+      if (action === "reprovar") {
+        try {
+          button.disabled = true;
+          button.textContent = "Reprovando...";
 
-      if (!updateStatus.ok) throw new Error("Erro ao reprovar conta");
+          const bodyDisapprovedPreRegistration = {
+            cpf: conta.cpf,
+            status: "3",
+          };
 
-      card.remove();
-      mostrarToast(`Conta de ${conta.name} reprovada.`, "erro");
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao reprovar conta.");
-    } finally {
-      button.disabled = false;
-      button.textContent = "Reprovar";
-    }
-  }
-});
+          const updateStatus = await fetch(
+            "http://localhost:8080/preRegistration/analysis",
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(bodyDisapprovedPreRegistration),
+            }
+          );
 
+          if (!updateStatus.ok) throw new Error("Erro ao reprovar conta");
 
+          card.remove();
+          mostrarToast(`Conta de ${conta.name} reprovada.`, "erro");
 
-
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } catch (err) {
+          console.error(err);
+          alert("Erro ao reprovar conta.");
+        } finally {
+          button.disabled = false;
+          button.textContent = "Reprovar";
+        }
+      }
+    });
   } catch (error) {
     console.error("Erro ao carregar contas pendentes:", error);
     lista.innerHTML = `<p class="text-red-600 text-center py-20">Erro ao carregar contas pendentes.</p>`;
@@ -275,7 +305,7 @@ function mostrarToast(mensagem, tipo = "sucesso") {
 
   const cores = {
     sucesso: "bg-green-600",
-    erro: "bg-red-600"
+    erro: "bg-red-600",
   };
 
   const toast = document.createElement("div");
@@ -289,4 +319,3 @@ function mostrarToast(mensagem, tipo = "sucesso") {
     setTimeout(() => toast.remove(), 700);
   }, 3000);
 }
-
