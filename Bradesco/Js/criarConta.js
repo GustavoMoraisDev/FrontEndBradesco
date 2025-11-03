@@ -36,24 +36,18 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(dados),
       });
 
-      // Se o back-end retornar erro (400, 409, etc)
       if (!response.ok) {
-        let erroMsg = "Erro ao enviar os dados. Tente novamente.";
+        let erroMsg = "Erro ao processar sua solicitação.";
 
-        try {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
           const errorData = await response.json();
-
-          if (
-            errorData &&
-            errorData.errors &&
-            Array.isArray(errorData.errors)
-          ) {
-            // Pega todas as mensagens e junta em uma string
-            erroMsg = errorData.errors.map((err) => err.message).join(" | ");
+          if (errorData?.errors?.length) {
+            erroMsg = errorData.errors.map((e) => e.defaultMessage).join(" | ");
           } else if (typeof errorData === "string") {
             erroMsg = errorData;
           }
-        } catch {
+        } else {
           erroMsg = await response.text();
         }
 
@@ -79,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Erro:", error);
       mensagemContainer.textContent =
-        "Falha ao conectar ao servidor. Verifique sua conexão.";
+        "Falha ao conectar ao servidor. Verifique sua conex.";
       mensagemContainer.classList.remove("hidden", "text-green-600");
       mensagemContainer.classList.add("text-red-600");
 

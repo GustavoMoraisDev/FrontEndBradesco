@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     container = document.createElement("div");
     container.id = "mensagemContainer";
 
-    // Classes Tailwind CSS para posicionamento e estado inicial (invisível/no topo)
+    // Classes Tailwind CSS para posicionamento e estado inicial
     container.className =
       "fixed top-0 left-1/2 transform -translate-x-1/2 mt-5 p-4 rounded-lg text-white shadow-xl z-50 transition-opacity duration-300 opacity-0 pointer-events-none min-w-80";
 
@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   try {
+    //Lógica para Buscar todos os dados da Conta
     const response = await fetch(`http://localhost:8080/accounts/${clienteId}`);
     if (!response.ok) throw new Error("Erro ao buscar dados da conta");
 
@@ -79,6 +80,95 @@ document.addEventListener("DOMContentLoaded", async () => {
     let dadosDestinatarioPix = null;
 
     bemVindo.textContent = data.name;
+
+    // Lógica para buscar as ultimas atividades
+    const ultimasAtividades = await fetch(
+      `http://localhost:8080/transactions/account/${data.accountNumber}`
+    );
+    if (!ultimasAtividades.ok)
+      throw new Error("Erro ao buscar ultimas atividades");
+
+    const dataAtividades = await ultimasAtividades.json();
+
+    const { entradas, saidas } = dataAtividades;
+    const card = document.getElementById("CardUltimasAtividades");
+
+    // Caso não tenha Atividades
+    if (entradas.length === 0 && saidas.length === 0) {
+      card.innerHTML = `
+    <h3 class="text-lg font-semibold mb-4 text-gray-800">Suas últimas atividades</h3>
+    <p class="text-gray-500 text-sm text-center">Nenhuma atividade recente encontrada</p>
+  `;
+    } else {
+      // Cria o título e a lista
+      const title = document.createElement("h3");
+      title.className = "text-lg font-semibold mb-4 text-gray-800";
+      title.textContent = "Últimas Atividades";
+
+      const ul = document.createElement("ul");
+      ul.className = "space-y-4 text-sm";
+
+      // Junta as entradas e saídas em um único array com tipo
+      const atividades = [
+        ...saidas.map((a) => ({ ...a, tipo: "saida" })),
+        ...entradas.map((a) => ({ ...a, tipo: "entrada" })),
+      ];
+
+      // Ordena pela data mais recente
+      atividades.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      // Monta os itens da lista
+      atividades.forEach((a) => {
+        const li = document.createElement("li");
+        li.className =
+          "flex justify-between items-center p-2 border-b border-gray-100";
+
+        const divInfo = document.createElement("div");
+
+        const descricao = document.createElement("p");
+        descricao.className = "font-medium";
+        descricao.textContent =
+          a.tipo === "entrada"
+            ? "Transferência Recebida"
+            : "Transferência Enviada";
+
+        const detalhe = document.createElement("p");
+        detalhe.className = "text-gray-500 text-xs";
+
+        const data = new Date(a.createdAt);
+        const dataFormatada = data.toLocaleString("pt-BR", {
+          day: "2-digit",
+          month: "long",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        detalhe.textContent = `${a.type} · ${dataFormatada}`;
+
+        divInfo.appendChild(descricao);
+        divInfo.appendChild(detalhe);
+
+        const valor = document.createElement("p");
+        valor.className = `font-bold ${
+          a.tipo === "entrada" ? "text-green-600" : "text-red-600"
+        }`;
+        valor.textContent = `${a.tipo === "entrada" ? "+ " : "- "}R$ ${Number(
+          a.value
+        ).toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+
+        li.appendChild(divInfo);
+        li.appendChild(valor);
+        ul.appendChild(li);
+      });
+
+      // Adiciona título e lista ao card
+      card.innerHTML = "";
+      card.appendChild(title);
+      card.appendChild(ul);
+    }
 
     // Função para animar transição suave
     const trocarConteudo = (html) => {
@@ -90,7 +180,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }, 150);
     };
 
-    // FUNÇÃO PARA ADICIONAR LISTENERS DE PIX (ATUALIZADA)
+    // Função para Lógica da Tela de Transferências e Pix
     const adicionarListenersPix = (saldoCliente, idOrigem, accountPayment) => {
       const cadastrarChavePix = document.getElementById("cadastrarChavePix");
       const blocoPixCadastra = document.getElementById("blocoCadastrarPix");
@@ -324,7 +414,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
 
-    // Conteúdo inicial (Início) (MANTIDO IGUAL)
+    // Conteúdo inicial
 
     trocarConteudo(`
 
@@ -545,7 +635,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
         item.classList.add("bg-red-100", "bradesco-red-text", "font-bold");
 
-        // MANTIDO IGUAL: Apenas o conteúdo muda
+        // Case dinâmico
         switch (id) {
           case "inicio":
             trocarConteudo(`
@@ -804,6 +894,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     mostrarMensagem(
       "erro",
       "Erro ao carregar dados da conta. Tente novamente mais tarde."
-    ); 
+    );
   }
 });
