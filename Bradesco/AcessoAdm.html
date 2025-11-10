@@ -8,11 +8,13 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
-    .bradesco-red { background-color: #CC092F; }
-    .bradesco-red-text { color: #CC092F; }
-    .bradesco-red-hover:hover { background-color: #A30825; }
-    body { background-color: #f5e4e7; }
-  </style>
+        .bradesco-red { background-color: #CC092F; }
+        .bradesco-red-text { color: #CC092F; }
+        .bradesco-red-hover:hover { background-color: #A30825; }
+        body { background-color: #f5e4e7; }
+        .fade { opacity: 0; transition: opacity 0.3s ease; }
+        .fade.show { opacity: 1; }
+    </style>
 </head>
 
 <body class="font-[Inter] text-gray-900 min-h-screen flex flex-col">
@@ -37,17 +39,17 @@
 
     <!-- MENU LATERAL -->
     <aside class="lg:col-span-2 lg:block hidden mt-6">
-            <nav class="sticky top-20 space-y-2">
-                <a id="inicio" href="#" class="flex items-center p-3 font-bold text-lg bradesco-red-text rounded-lg bg-red-100">Início</a>
-                <a id="Dashboard" href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Dashboard</a>
-                <a id="Antifraude" href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Antifraude</a>
-                <a id="Administradores" href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Administradores</a>
-                <div class="py-2 border-t border-gray-200 mt-2"></div>
-                <a href="#Home" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg" onclick="window.location.href='http://127.0.0.1:5500/Bradesco/Home.html'">Sair</a>
-            </nav>
-        </aside>
+      <nav class="sticky top-20 space-y-2">
+        <a id="inicio" href="#" class="flex items-center p-3 font-bold text-lg bradesco-red-text rounded-lg bg-red-100">Início</a>
+        <a id="Dashboard" href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Dashboard</a>
+        <a id="Antifraude" href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Antifraude</a>
+        <a id="Administradores" href="#" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg">Administradores</a>
+        <div class="py-2 border-t border-gray-200 mt-2"></div>
+        <a href="#Home" class="flex items-center p-3 text-gray-700 hover:bg-gray-200 rounded-lg" onclick="window.location.href='http://127.0.0.1:5500/Bradesco/Home.html'">Sair</a>
+      </nav>
+    </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+        <!-- CONTEÚDO FIXO  -->
     <section class="lg:col-span-10 mt-6">
 
       <div class="bg-white shadow-xl rounded-xl p-6 mb-6">
@@ -67,26 +69,22 @@
         </div>
       </div>
 
-      <!-- ÁREA DINÂMICA DE CONTAS -->
-      <div class="mb-5 bg-white shadow-xl rounded-xl p-10">
-        <h3 class="text-xl font-semibold mb-4 text-gray-800">Contas em Análise</h3>
-
-        <div id="listaContasPendentes" class="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-6">
-          <!-- Inserindo os cards aqui -->
-        </div>
-      </div>
+      <section id="conteudoPrincipal" class="lg:col-span-10  fade show">
+            <!-- Conteúdo inicial vem via JS -->
+    </section>
+     
     </section>
 
+    
 
   </main>
 
-  <!-- Adicionando o Status da Análise aqui -->
+   <!-- Adicionando o Status da Análise aqui -->
   <div id="toastContainer" class="flex flex-col items-center gap-2 mb-6 "></div>
 
   <footer class="w-full bg-gradient-to-r from-[#b41a83] via-[#cc092f] to-[#f36279] text-white text-center py-4">
     © 2025 Bradesco. Todos os direitos reservados.
   </footer>
-
 
   <script src="/Bradesco/Js/acessoAdm.js"></script>
 </body>

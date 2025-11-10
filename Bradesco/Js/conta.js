@@ -391,7 +391,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
 
             if (!response.ok) {
-              throw new Error("Erro ao cadastrar chave Pix");
+              const errorText = await response.text();
+              throw new Error(errorText || "Erro ao cadastrar chave Pix");
             }
 
             mostrarMensagem(
@@ -405,10 +406,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             }, 2000);
           } catch (error) {
             console.error("Erro ao cadastrar chave Pix:", error);
-            mostrarMensagem(
-              "erro",
-              "Erro de comunicação ao cadastrar a chave Pix."
-            );
+            
+              mostrarMensagem("erro", error.message);
           }
         });
       }
