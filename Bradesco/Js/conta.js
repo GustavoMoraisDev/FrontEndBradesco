@@ -300,52 +300,182 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
 
           try {
-            const transferData = {
-              type: "Pix",
-              method: "Saida",
-              chave: dadosDestinatarioPix.pixKey,
-              accountPayment: accountPayment,
-              accountReceivable: dadosDestinatarioPix.accountNumber,
-              value: valorPix,
-              description: "Transferência Pix",
-            };
-
-            const transferResponse = await fetch(
-              `http://localhost:8080/transactions`,
+            // Chama o endpoint de análise anti-fraude
+            const analyzeResponse = await fetch(
+              `http://localhost:8080/transactions/analyze`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(transferData),
+                body: JSON.stringify({
+                  type: "Pix",
+                  method: "Saida",
+                  chave: dadosDestinatarioPix.pixKey,
+                  accountPayment: accountPayment,
+                  accountReceivable: dadosDestinatarioPix.accountNumber,
+                  value: valorPix,
+                  description: "Transferência Pix",
+                }),
               }
             );
 
-            if (!transferResponse.ok) {
-              const errorText = await transferResponse.text();
-              const mensagemErro = errorText.includes("Erro")
-                ? errorText
-                : `Erro ao efetuar Pix: ${transferResponse.statusText}`;
-              throw new Error(mensagemErro);
+            const analyzeResult = await analyzeResponse.json();
+
+            // Avalia o resultado
+            if (analyzeResult.status === "200") {
+               try {
+                    const createTransactionResponse = await fetch(
+                      "http://localhost:8080/transactions",
+                      {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          type: "Pix",
+                          method: "Saida",
+                          chave: dadosDestinatarioPix.pixKey,
+                          accountPayment: accountPayment,
+                          accountReceivable: dadosDestinatarioPix.accountNumber,
+                          value: valorPix,
+                          description: "Transferência Pix",
+                        }),
+                      }
+                    );
+
+                    const createTransactionResult = await createTransactionResponse.json();
+
+                    if (createTransactionResponse.ok) {
+                      mostrarMensagem("sucesso", "Pix enviado com sucesso!");
+                      //reloud após pix
+                      setTimeout(() => {location.reload();}, 2000);
+                      return;
+                    } else {
+                      mostrarMensagem(
+                        "erro",
+                        createTransactionResult || "Erro ao enviar Pix."
+                      );
+                    }
+                  } catch (error) {
+                    mostrarMensagem(
+                      "erro",
+                      "Erro ao enviar Pix. Tente novamente."
+                    );
+                  }
             }
 
-            mostrarMensagem(
-              "sucesso",
-              `Pix de R$ ${valorPix
-                .toFixed(2)
-                .replace(".", ",")} enviado com sucesso para ${
-                dadosDestinatarioPix.name
-              }!`
-            );
+            if (analyzeResult.status === "202") {
+              // Cria bloco para digitar token
+              let blocoToken = document.getElementById("blocoTokenPix");
+              if (!blocoToken) {
+                blocoToken = document.createElement("div");
+                blocoToken.id = "blocoTokenPix";
+                blocoToken.className =
+                  "fixed top-20 left-1/2 transform -translate-x-1/2 p-4 bg-white shadow-lg rounded-lg z-50 w-96 flex flex-col gap-3";
 
-            // Recarrega a tela após um pequeno atraso para o usuário ler
-            setTimeout(() => {
-              window.location.reload();
-            }, 2000);
+                blocoToken.innerHTML = `
+            <p class="font-semibold text-gray-700">${analyzeResult.message}</p>
+            <input type="text" id="inputTokenPix" placeholder="Digite o token" class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" />
+            <button id="btnOkTokenPix" class="bradesco-red text-white px-4 py-2 rounded-lg shadow-md bradesco-red-hover transition">OK</button>
+          `;
+
+                document.body.appendChild(blocoToken);
+              }
+
+              blocoToken.classList.remove("hidden");
+
+              const btnOkTokenPix = document.getElementById("btnOkTokenPix");
+              const inputTokenPix = document.getElementById("inputTokenPix");
+
+              btnOkTokenPix.onclick = async () => {
+                const token = inputTokenPix.value.trim();
+                if (!token) {
+                  mostrarMensagem(
+                    "erro",
+                    "Token é obrigatório para prosseguir."
+                  );
+                  return;
+                }
+
+                const verifyResponse = await fetch(
+                  "http://localhost:8080/transactions/verify-token",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      accountNumber: accountPayment,
+                      token,
+                    }),
+                  }
+                );
+
+                let verifyResult;
+                try {
+                  verifyResult = await verifyResponse.json();
+                } catch {
+                  mostrarMensagem("erro", "Resposta inválida do servidor.");
+                  return;
+                }
+
+                // Se o HTTP for 200, ou status interno 200, continua
+                if (verifyResponse.ok && verifyResult.status === 200) {
+                  mostrarMensagem("sucesso", verifyResult.message);
+                  blocoToken.classList.add("hidden");
+
+                  // Chamar a rota que cria a transação
+                  try {
+                    const createTransactionResponse = await fetch(
+                      "http://localhost:8080/transactions",
+                      {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          type: "Pix",
+                          method: "Saida",
+                          chave: dadosDestinatarioPix.pixKey,
+                          accountPayment: accountPayment,
+                          accountReceivable: dadosDestinatarioPix.accountNumber,
+                          value: valorPix,
+                          description: "Transferência Pix",
+                        }),
+                      }
+                    );
+
+                    const createTransactionResult =
+                      await createTransactionResponse.json();
+
+                    if (createTransactionResponse.ok) {
+                      mostrarMensagem("sucesso", "Pix enviado com sucesso!");
+                      //reloud após pix
+                      setTimeout(() => {location.reload();}, 2000);
+                    } else {
+                      mostrarMensagem(
+                        "erro",
+                        createTransactionResult || "Erro ao enviar Pix."
+                      );
+                    }
+                  } catch (error) {
+                    mostrarMensagem(
+                      "erro",
+                      "Erro ao enviar Pix. Tente novamente."
+                    );
+                    console.error(error);
+                  }
+                } else {
+                  mostrarMensagem(
+                    "erro",
+                    verifyResult.message || "Token incorreto ou expirado."
+                  );
+                }
+              };
+              return; // para não enviar Pix antes da verificação
+            }
+
+            // Outros status → bloqueio ou aviso
+            mostrarMensagem("erro", analyzeResult.message);
           } catch (error) {
-            console.error("Erro na transação Pix:", error);
             mostrarMensagem(
               "erro",
-              `Falha ao realizar o Pix: ${error.message}`
+              "Erro ao processar a transação. Tente novamente."
             );
+            console.error(error);
           }
         });
       }
@@ -406,8 +536,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             }, 2000);
           } catch (error) {
             console.error("Erro ao cadastrar chave Pix:", error);
-            
-              mostrarMensagem("erro", error.message);
+
+            mostrarMensagem("erro", error.message);
           }
         });
       }

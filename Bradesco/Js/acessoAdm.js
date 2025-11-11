@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // ------------------------------
-  // Elementos do DOM
-  // ------------------------------
+  
   const bemVindo = document.getElementById("bemVindo");
   const section = document.getElementById("conteudoPrincipal");
   const contasAtivasBtn = document.getElementById("contasAtivas");
@@ -9,15 +7,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const contasReprovadasBtn = document.getElementById("contasReprovadas");
   const menuItens = document.querySelectorAll("aside nav a");
 
-  // ------------------------------
+  
   // Variáveis globais
-  // ------------------------------
   let dataAdmin = {}; // dados do admin
   let contasPendentesData = []; // somente contas pendentes (status 1)
+  let todasContasGlobal = [];
 
-  // ------------------------------
+  
   // FUNÇÃO: Mostrar Toast
-  // ------------------------------
 function mostrarToast(mensagem, tipo = "sucesso") {
   const toastContainer = document.getElementById("toastContainer");
 
@@ -38,14 +35,12 @@ function mostrarToast(mensagem, tipo = "sucesso") {
   }, 3000);
 }
 
-  // ------------------------------
+  
   // FUNÇÃO: Trocar conteúdo do section
-  // ------------------------------
   const trocarConteudo = (html) => section.innerHTML = html;
 
-  // ------------------------------
+  
   // BUSCAR DADOS DO ADMIN
-  // ------------------------------
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const clienteId = urlParams.get("id");
@@ -61,9 +56,8 @@ function mostrarToast(mensagem, tipo = "sucesso") {
     bemVindo.textContent = "Erro ao carregar dados da conta.";
   }
 
-  // ------------------------------
-  // FUNÇÃO: Buscar Contas
-  // ------------------------------
+  
+  // FUNÇÃO: Buscar Contas Pré Registro
   const buscarContas = async (status, element) => {
     try {
       const response = await fetch(`http://localhost:8080/preRegistration/status?status=${status}`);
@@ -88,9 +82,26 @@ function mostrarToast(mensagem, tipo = "sucesso") {
     }
   };
 
-  // ------------------------------
-  // FUNÇÃO: Criar Cards de Contas
-  // ------------------------------
+  // FUNÇÃO: Buscar Contas Totais
+  const buscarTodasContas = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/accounts");
+    if (!response.ok) throw new Error("Erro ao buscar todas as contas");
+    const contas = await response.json();
+
+    // Ordena da mais recente para a mais antiga
+    contas.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    return contas;
+  } catch (err) {
+    console.error(err);
+    mostrarToast("Erro ao buscar todas as contas", "erro");
+    return [];
+  }
+};
+
+  
+  // FUNÇÃO: Criar Cards de Contas Pré Registro
+  
   const criarCards = (contasData) => {
     if (!contasData || contasData.length === 0) {
       return `
@@ -178,11 +189,73 @@ function mostrarToast(mensagem, tipo = "sucesso") {
     `  }).join("");
 };
 
+
+  // FUNÇÃO: Criar Cards de Contas Totais
+const criarCardsTodas = (contas) => {
+  if (!contas || contas.length === 0) {
+    return `
+      <div class="bg-white rounded-xl p-20 text-center">
+        <p class="text-black text-1xl font-medium">Nenhuma conta encontrada</p>
+      </div>
+    `;
+  }
+
+  return contas.map(conta => {
+
+    let statusConta
+    if(conta.status === '1') {
+      statusConta = 'Ativo'
+    } else {
+      statusConta = 'Inativo'
+    }
+
+    let colorStatus
+    if(conta.status === '1') {
+      colorStatus = 'bg-green-600'
+    } else {
+      colorStatus = 'bg-red-600'
+    }
+
+    let buttonAction
+    if(conta.status === '1') {
+      buttonAction = 'Inativar'
+    } else {
+      buttonAction = 'Ativar'
+    }
+
+    let colorButton
+    if(conta.status === '1') {
+      colorButton = 'bg-red-500 hover:bg-red-700'
+    } else {
+      colorButton = 'bg-green-500 hover:bg-green-700'
+    }
+
+    let actionData
+    if(conta.status === '1') {
+      actionData = '2'
+    } else {
+      actionData = '1'
+    }
+
+     
+    
+    return `
+      <div class="grid grid-cols-[2fr_2fr_1fr_1fr_1.5fr_1fr_auto] gap-2 items-center p-3 border-b text-sm text-gray-800">
+      <p>${conta.name}</p>
+      <p>${conta.cpf}</p>
+      <p>${conta.accountNumber}</p>
+      <p>${Number(conta.saldo).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+      <p>${new Date(conta.createdAt).toLocaleDateString("pt-BR")}</p>
+      <p class="text-xs font-bold text-white px-3 py-1 rounded-full ${colorStatus} w-fit">${statusConta}</p>
+      <button data-action="${actionData}" data-id="${conta.accountNumber}" class="text-xs text-white font-bold ${colorButton} border-amber-50 px-3 py-1 rounded-full w-fit">${buttonAction}</button>
+    </div>
+    `;
+  }).join("");
+};
   
 
-  // ------------------------------
-  // FUNÇÃO: Carregar Menu
-  // ------------------------------
+  
+  // FUNÇÃO: Carregar Menu-
   const carregarMenu = (id) => {
     // reset menu
     menuItens.forEach(i => i.classList.remove("bg-red-100", "bradesco-red-text", "font-bold"));
@@ -194,16 +267,28 @@ function mostrarToast(mensagem, tipo = "sucesso") {
         trocarConteudo(`
           <div class="space-y-6">
             <div class="bg-white shadow-xl rounded-xl p-6 border border-gray-100 mb-6">
+            
               ${criarCards(contasPendentesData)}
             </div>
           </div>
         `);
         break;
+      case "Contas":
+        trocarConteudo(`
+          <div class="space-y-6">
+          
+            <div class="bg-white shadow-xl rounded-xl p-6 border border-gray-100 mb-6">
+            <div class="grid grid-cols-[2fr_2fr_0.9fr_0.9fr_2fr_1.1fr_0.8fr] text-neutral-600 font-semibold border-b pb-2 px-3">
+            <p>Nome</p> <p>Documento</p> <p>Conta</p> <p>Saldo</p> <p>Data de Criação</p> <p>Satus</p> <p>Ação</p>
+            </div>
+            ${criarCardsTodas(todasContasGlobal)}
+              
+            </div>
+          </div>
+          `);
+        break;
       case "Dashboard":
         trocarConteudo(`<div class="bg-white shadow-xl rounded-xl p-20">... Dashboard ...</div>`);
-        break;
-      case "Antifraude":
-        trocarConteudo(`<div class="bg-white shadow-xl rounded-xl p-20">... Antifraude ...</div>`);
         break;
       case "Administradores":
         trocarConteudo(`<div class="bg-white shadow-xl rounded-xl p-20">... Gerenciamento de Admins ...</div>`);
@@ -211,18 +296,17 @@ function mostrarToast(mensagem, tipo = "sucesso") {
     }
   };
 
-  // ------------------------------
+  
   // FUNÇÃO: Ação de Aprovar / Reprovar
-  // ------------------------------
   const handleContaAction = async (event) => {
     const button = event.target.closest("button");
-    if (!button || !button.dataset.action) return;
+    if (!button || !["aprovar", "reprovar"].includes(button.dataset.action)) return;
 
     const action = button.dataset.action;
     const contaId = button.dataset.id;
     const card = button.closest(`[id='conta-${contaId}']`);
     const conta = contasPendentesData.find(c => c.id == contaId);
-    if (!conta) return console.error("Conta não encontrada:", contaId);
+    if (!conta) return console.error();
 
     try {
       if (action === "aprovar") {
@@ -287,8 +371,6 @@ function mostrarToast(mensagem, tipo = "sucesso") {
             }
           );
 
-        if (!updateStatus.ok) { throw new Error("Erro ao mudar Status da Conta"); }
-
           card.remove();
           mostrarToast(
             `Conta de ${conta.name} aprovada com sucesso!`,
@@ -298,6 +380,7 @@ function mostrarToast(mensagem, tipo = "sucesso") {
           setTimeout(() => {
             location.reload();
           }, 2000);
+          
       } else if (action === "reprovar") {
 
         const bodyDisapprovedPreRegistration = {
@@ -316,27 +399,56 @@ function mostrarToast(mensagem, tipo = "sucesso") {
 
         if (!updateStatus.ok) throw new Error("Erro ao reprovar conta");
           
-        card.remove();
-          mostrarToast(`Conta de ${conta.name} reprovada.`, "erro");
 
         setTimeout(() => {
             location.reload();
           }, 2000);
       }
+    
+     return;
     } catch (err) {
       console.error(err);
     }
   };
 
-  // ------------------------------
+  const handleStatusChange = async (event) => {
+  const button = event.target.closest("button");
+  if (!button || !["1", "2"].includes(button.dataset.action)) return;
+
+  // Lê os valores dos atributos
+  const novoStatus = button.dataset.action;  // 1 = Ativar, 2 = Inativar
+  const accountNumber = button.dataset.id;   // Número da conta
+
+  try {
+    const response = await fetch(`http://localhost:8080/accounts/${accountNumber}/${novoStatus}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const message = await response.text();
+    mostrarToast(message, "sucesso");
+
+    setTimeout(() => {
+            location.reload();
+          }, 2000);
+
+     } catch (err) {
+    console.error(err);
+    mostrarToast("Erro ao conectar com o servidor", "erro");
+  }
+};
+
+  
   // Inicialização
-  // ------------------------------
+
   // 1. Buscar contadores
   await Promise.all([
     buscarContas("2", contasAtivasBtn),
     buscarContas("1", contasPendentesBtn),
     buscarContas("3", contasReprovadasBtn)
   ]);
+
+    todasContasGlobal = await buscarTodasContas();
 
   // 2. Carregar conteúdo inicial
   carregarMenu("inicio");
@@ -352,6 +464,9 @@ function mostrarToast(mensagem, tipo = "sucesso") {
   // 4. Listener dos botões Aprovar/Reprovar (delegação)
   section.addEventListener("click", handleContaAction);
 
-  // 5. Botão contasPendentesBtn
+  // 5. Listener dos botões Ativar/Inativar (delegação)
+  section.addEventListener("click", handleStatusChange);
+
+  // 6. Botão contasPendentesBtn
   contasPendentesBtn.addEventListener("click", () => carregarMenu("Administradores"));
 });
